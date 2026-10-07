@@ -4,4 +4,41 @@
   // Cloned to ~/Documents/Projects/ai-skills by install.sh; opencode advertises
   // each skill (skills/<name>/SKILL.md) and loads one via the `skill` tool when relevant.
   "skills": ["~/Documents/Projects/ai-skills/skills"],
+  // Language intelligence: mcp-language-server (isaacphi, BSD) bridges each
+  // language's LSP server into MCP tools (definition, references, diagnostics,
+  // hover, rename_symbol, edit_file). Install with:
+  //   go install github.com/isaacphi/mcp-language-server@latest
+  // LSP servers come from Homebrew: pyright, rust-analyzer, kotlin-language-server.
+  // sourcekit-lsp ships with Xcode CLT.
+  // TypeScript caveat: Homebrew's typescript-language-server depends on the
+  // typescript@7 (native) formula, which dropped tsserver.js, so ts-ls has no
+  // server to spawn. install.sh therefore creates a dedicated npm prefix at
+  // ~/.ts-ls-server holding typescript-language-server + classic typescript@5.
+  "mcp": {
+    "servers": {
+      "typescript": {
+        "type": "local",
+        "command": ["mcp-language-server", "--workspace", ".", "--lsp", "/Users/wendellbalagot/.ts-ls-server/bin/typescript-language-server", "--", "--stdio"]
+      },
+      "python": {
+        "type": "local",
+        "command": ["mcp-language-server", "--workspace", ".", "--lsp", "pyright-langserver", "--", "--stdio"]
+      },
+      "rust": {
+        "type": "local",
+        "command": ["mcp-language-server", "--workspace", ".", "--lsp", "rust-analyzer"]
+      },
+      "swift": {
+        "type": "local",
+        "command": ["mcp-language-server", "--workspace", ".", "--lsp", "sourcekit-lsp"]
+      },
+      // kotlin-language-server is a JVM app; cold start can exceed the 30s
+      // default startup timeout, so allow it extra time.
+      "kotlin": {
+        "type": "local",
+        "command": ["mcp-language-server", "--workspace", ".", "--lsp", "kotlin-language-server"],
+        "timeout": { "startup": 120000 }
+      }
+    }
+  },
 }

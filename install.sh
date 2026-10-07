@@ -35,7 +35,27 @@ else
   exit 1
 fi
 
-# --- 2. Neovim version (LazyVim needs >= 0.11.2) ---
+# --- 2. Language-intelligence MCP bridge ---
+info "Installing mcp-language-server (LSP -> MCP bridge)"
+export PATH="$HOME/go/bin:$PATH"
+go install github.com/isaacphi/mcp-language-server@latest
+ln -sfn "$HOME/go/bin/mcp-language-server" "$(brew --prefix)/bin/mcp-language-server"
+ok "mcp-language-server: $(brew --prefix)/bin/mcp-language-server"
+
+# --- 3. Front-of-path typescript-language-server ---
+# Homebrew's typescript-language-server depends on typescript@7 (native), which
+# dropped tsserver.js, so it cannot launch a server. Install ts-ls + classic
+# typescript@5 into a dedicated npm prefix; opencode.jsonc points the `typescript`
+# MCP server at ~/.ts-ls-server/bin/typescript-language-server.
+info "Installing typescript-language-server + typescript@5 into ~/.ts-ls-server"
+if command -v npm >/dev/null 2>&1; then
+  npm install --global --prefix "$HOME/.ts-ls-server" typescript-language-server typescript@5 >/dev/null
+  ok "typescript-language-server: $HOME/.ts-ls-server/bin/typescript-language-server"
+else
+  warn "npm not found — typescript MCP server will not work until ts-ls is installed"
+fi
+
+# --- 4. Neovim version (LazyVim needs >= 0.11.2) ---
 nvim_version="$(nvim --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "0.0.0")"
 if [ "$(printf '%s\n' "0.11.2" "$nvim_version" | sort -V | head -1)" != "0.11.2" ]; then
   info "Neovim $nvim_version < 0.11.2, upgrading"
@@ -43,7 +63,7 @@ if [ "$(printf '%s\n' "0.11.2" "$nvim_version" | sort -V | head -1)" != "0.11.2"
 fi
 ok "Neovim: $(nvim --version | head -1)"
 
-# --- 3. Config symlinks ---
+# --- 5. Config symlinks ---
 info "Linking configs"
 
 # ai-skills repo (opencode global config references its skills/ directory)
@@ -63,7 +83,7 @@ if [ "$BACKED_UP" -gt 0 ]; then
   warn "Old configs saved in $BACKUP_DIR"
 fi
 
-# --- 4. Bootstrap LazyVim plugins ---
+# --- 6. Bootstrap LazyVim plugins ---
 info "Syncing LazyVim plugins (first run may take a minute)"
 nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 || true
 ok "LazyVim bootstrapped"
@@ -75,4 +95,6 @@ echo "   wezterm --version   tmux -V   nvim --version | head -1"
 echo "   wezterm start -- nvim     # inside wezterm: :checkhealth"
 echo "   tmux new -s test"
 echo "   opencode api get /api/skill   # should list karpathy-guidelines (opencode skill)"
+echo "   opencode mcp list             # should show typescript/python/rust/swift/kotlin connected"
+echo "   ls \$HOME/.ts-ls-server/bin      # typescript-language-server lives here (not brew) once step 3 runs"
 echo "   If opencode was running, restart it: opencode service restart"
