@@ -18,7 +18,7 @@ Terminal + editor setup: **WezTerm**, **tmux**, **LazyVim** — all using
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"  # if no brew
-git clone <this-repo> ~/dotfiles
+git clone https://github.com/iamwendellbalagot/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ./install.sh
 ```
