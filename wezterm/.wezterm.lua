@@ -2,14 +2,15 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Font
-config.font = wezterm.font("JetBrains Mono Nerd Font")
+config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = 13.0
 config.line_height = 1.1
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" } -- ligatures
 
 -- Cursor
 config.cursor_blink_rate = 500
-config.cursor_blink_style = "Blink"
+config.cursor_blink_ease_in = "Constant"
+config.cursor_blink_ease_out = "Constant"
 
 -- Window
 config.window_padding = { left = 8, right = 8, top = 6, bottom = 6 }
