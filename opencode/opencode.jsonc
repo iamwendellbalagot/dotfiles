@@ -1,0 +1,7 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // AI guidelines + skills collection (https://github.com/iamwendellbalagot/ai-skills)
+  // Cloned to ~/Documents/Projects/ai-skills by install.sh; opencode advertises
+  // each skill (skills/<name>/SKILL.md) and loads one via the `skill` tool when relevant.
+  "skills": ["~/Documents/Projects/ai-skills/skills"],
+}

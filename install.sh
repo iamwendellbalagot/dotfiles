@@ -45,9 +45,20 @@ ok "Neovim: $(nvim --version | head -1)"
 
 # --- 3. Config symlinks ---
 info "Linking configs"
+
+# ai-skills repo (opencode global config references its skills/ directory)
+AI_SKILLS_DIR="$HOME/Documents/Projects/ai-skills"
+if [ ! -d "$AI_SKILLS_DIR/.git" ]; then
+  mkdir -p "$HOME/Documents/Projects"
+  info "Cloning ai-skills"
+  git clone -q https://github.com/iamwendellbalagot/ai-skills.git "$AI_SKILLS_DIR"
+fi
+ok "ai-skills: $AI_SKILLS_DIR"
+
 backup_and_link "$HOME/.wezterm.lua" "$REPO_DIR/wezterm/.wezterm.lua"
 backup_and_link "$HOME/.tmux.conf" "$REPO_DIR/tmux/.tmux.conf"
 backup_and_link "$HOME/.config/nvim" "$REPO_DIR/nvim"
+backup_and_link "$HOME/.config/opencode/opencode.jsonc" "$REPO_DIR/opencode/opencode.jsonc"
 if [ "$BACKED_UP" -gt 0 ]; then
   warn "Old configs saved in $BACKUP_DIR"
 fi
@@ -63,3 +74,5 @@ ok "Done! Verify:"
 echo "   wezterm --version   tmux -V   nvim --version | head -1"
 echo "   wezterm start -- nvim     # inside wezterm: :checkhealth"
 echo "   tmux new -s test"
+echo "   opencode api get /api/skill   # should list karpathy-guidelines (opencode skill)"
+echo "   If opencode was running, restart it: opencode service restart"

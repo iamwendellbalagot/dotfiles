@@ -11,7 +11,8 @@ Terminal + editor setup: **WezTerm**, **tmux**, **LazyVim** — all using
 ├── install.sh            # bootstrap script (idempotent)
 ├── wezterm/.wezterm.lua  # -> ~/.wezterm.lua
 ├── tmux/.tmux.conf       # -> ~/.tmux.conf
-└── nvim/                 # -> ~/.config/nvim  (LazyVim starter)
+├── nvim/                 # -> ~/.config/nvim  (LazyVim starter)
+└── opencode/opencode.jsonc # -> ~/.config/opencode/opencode.jsonc
 ```
 
 ## New machine setup
@@ -27,9 +28,15 @@ The script:
 
 1. Installs everything in the `Brewfile` (wezterm, tmux, neovim, font)
 2. Upgrades neovim if older than 0.11.2 (required by LazyVim)
-3. Backs up any existing `~/.wezterm.lua`, `~/.tmux.conf`, `~/.config/nvim`
+3. Clones the [ai-skills](https://github.com/iamwendellbalagot/ai-skills) repo to `~/Documents/Projects/ai-skills`
+4. Backs up any existing `~/.wezterm.lua`, `~/.tmux.conf`, `~/.config/nvim`,
+   `~/.config/opencode/opencode.jsonc`
    (to `~/.dotfiles-backup-<timestamp>/`), then symlinks the repo configs
-4. Bootstraps LazyVim plugins (`Lazy! sync`)
+5. Bootstraps LazyVim plugins (`Lazy! sync`)
+
+The `opencode.jsonc` global config registers `~/Documents/Projects/ai-skills/skills`
+with opencode, so skills from that repo (e.g. `karpathy-guidelines`) are
+discovered and advertised in every project.
 
 ## Day-to-day
 
